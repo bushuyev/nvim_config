@@ -1,4 +1,18 @@
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.textDocument.completion.completionItem.resolveSupport = {
+  properties = {
+    'documentation',
+    'detail',
+    'additionalTextEdits',
+  }
+}
+
+
+
+
 require( "rust-tools").setup({
+
 tools = {
         runnables = {
           use_telescope = true,
@@ -33,22 +47,25 @@ tools = {
             silent = true,
             buffer = bufnr
           }
-          vim.keymap.set('n', '<leader><leader>rr',
-            "<Cmd>RustRunnables<CR>", bufopts)
-          vim.keymap.set('n', 'K', "<Cmd>RustHoverActions<CR>",
-            bufopts)
+          vim.keymap.set('n', '<leader><leader>rr', "<Cmd>RustRunnables<CR>", bufopts)
+          vim.keymap.set('n', 'K', "<Cmd>RustHoverActions<CR>", bufopts)
         end,
+    	capabilities = capabilities,
         ["rust-analyzer"] = {
           assist = {
             importEnforceGranularity = true,
             importPrefix = "create"
           },
-          cargo = { allFeatures = true },
+          cargo = { allFeatures = true, target = "wasm32-unknown-unknown" },
           checkOnSave = {
             -- default: `cargo check`
             command = "clippy",
             allFeatures = true
-          }
+          },
+	  procMacro = {
+              enable = true
+          },
+
         },
         inlayHints = {
           -- NOT SURE THIS IS VALID/WORKS 😬

@@ -51,9 +51,9 @@ require("packer").startup(function(use)
   -- Optional
   use("nvim-lua/popup.nvim")
   use("nvim-lua/plenary.nvim")
-  use({"nvim-telescope/telescope.nvim", config = function()
-     require("extensions.telescope").setup()
-  end })
+  --use({"nvim-telescope/telescope.nvim", config = function()
+  --   require("extensions.telescope").setup()
+  --end })
 
   -- Some color scheme other then default
   use("arcticicestudio/nord-vim")
@@ -67,25 +67,45 @@ require("packer").startup(function(use)
 
   --use ("BurntSushi/ripgrep")
   use ({"BurntSushi/ripgrep",
-	config = function()
-	   require("telescope.builtin").load_extension("find_files")
-	   require("telescope.builtin").load_extension("grep_string")
-  	end
- })
-
- use({
-    'crusj/bookmarks.nvim',
-    branch = 'main',
-    requires = { 'kyazdani42/nvim-web-devicons' },
     config = function()
-        require("bookmarks").setup()
-        require("telescope").load_extension("bookmarks")
+       --require("telescope.builtin").load_extension("find_files")
+       --require("telescope.builtin").load_extension("grep_string")
     end
+  })
+
+  use({
+     'crusj/bookmarks.nvim',
+     branch = 'main',
+     requires = { 'kyazdani42/nvim-web-devicons' },
+     config = function()
+         require("bookmarks").setup()
+         --require("telescope").load_extension("bookmarks")
+     end
   })
 
   use ({"nvim-treesitter/nvim-treesitter"})
   use ({"sharkdp/fd"})
 
+  use({
+    "klen/nvim-test",
+    config = function()
+      require('nvim-test').setup()
+    end
+  })
+
+  use({"rhysd/git-messenger.vim"})
+  use({
+    "folke/which-key.nvim",
+    config = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+      require("which-key").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+ })
 end)
 
 -- the first run will install packer and our plugins
@@ -96,9 +116,15 @@ end
 
 
 
-require('lsp_setup')
+--require('lsp_setup') -- configured through rust_tools
 require('bookmarks_setup')
+require('nvim-treesitter')
 require('rust_analyzer_setup_2')
 require('rust_tools_setup')
-require('telescope_setup')
+--require('telescope_setup')
 require('fzf_setup')
+require('nvim-test_setup')
+
+local wk = require("which-key")
+
+wk.setup()
