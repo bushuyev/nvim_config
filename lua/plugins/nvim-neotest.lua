@@ -27,6 +27,7 @@ return {
           -- Here you can specify the settings for the adapter, i.e.
           runner = "pytest",
           -- python = ".venv/bin/python",
+          python = "/usr/bin/python3",
         },
       },
       status = { virtual_text = true },
