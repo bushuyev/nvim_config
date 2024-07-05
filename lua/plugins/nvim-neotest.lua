@@ -2,10 +2,12 @@ return {
   {
     "nvim-neotest/neotest",
     dependencies = {
+      "nvim-neotest/neotest-python",
       "nvim-lua/plenary.nvim",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
-      "rouge8/neotest-rust",
+      --"rouge8/neotest-rust",
+      "mrcjkb/rustaceanvim",
     },
     opts = {
       -- Can be a list of adapters like what neotest expects,
@@ -15,11 +17,16 @@ return {
       -- adapters = {},
       -- Example for loading neotest-go with a custom config
       adapters = {
-        ["neotest-rust"] = {
-          args = {
-            "--no-capture",
-          },
-          dap_adapter = "lldb",
+        --["neotest-rust"] = {
+        --  args = {
+        --    "--no-capture",
+        --  },
+        --  dap_adapter = "codelldb",
+        --},
+	["neotest-python"] = {
+          -- Here you can specify the settings for the adapter, i.e.
+          runner = "pytest",
+          -- python = ".venv/bin/python",
         },
       },
       status = { virtual_text = true },
@@ -35,6 +42,10 @@ return {
       },
     },
     config = function(_, opts)
+      opts.adapters = opts.adapters or {}
+      vim.list_extend(opts.adapters, {
+        require('rustaceanvim.neotest'),
+      })
       local neotest_ns = vim.api.nvim_create_namespace("neotest")
       vim.diagnostic.config({
         virtual_text = {
@@ -114,6 +125,8 @@ return {
     { "<leader>to", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show Output" },
     { "<leader>tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle Output Panel" },
     { "<leader>tS", function() require("neotest").run.stop() end, desc = "Stop" },
+    --- my
+    { "<leader>tl", function() require("neotest").run.run_last() end, desc = "Run last" },
   },
   },
   {
@@ -126,6 +139,7 @@ return {
   },
 
   {
-    "rouge8/neotest-rust",
+   -- "rouge8/neotest-rust",
+   "mrcjkb/rustaceanvim"
   },
 }
