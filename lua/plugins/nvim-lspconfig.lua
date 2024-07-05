@@ -140,6 +140,9 @@ return {
              client.server_capabilities.hoverProvider = false
            end, ruff)
          end,
+	 rust_analyzer = function()
+          return true
+        end,
 	-- end python
       },
     }
