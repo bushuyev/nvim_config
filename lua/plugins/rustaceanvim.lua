@@ -5,18 +5,23 @@ return {
   opts = {
     server = {
       on_attach = function(_, bufnr)
+
         vim.keymap.set("n", "<leader>cR", function()
           vim.cmd.RustLsp("codeAction")
         end, { desc = "Code Action", buffer = bufnr })
+
         vim.keymap.set("n", "<leader>dr", function()
           vim.cmd.RustLsp("debuggables")
         end, { desc = "Rust Debuggables", buffer = bufnr })
+
+	vim.lsp.inlay_hint.enable(true)
+
       end,
       default_settings = {
         -- rust-analyzer language server configuration
         ["rust-analyzer"] = {
           cargo = {
-            allFeatures = true,
+            allFeatures = false,
             loadOutDirsFromCheck = true,
             buildScripts = {
               enable = true,
@@ -32,6 +37,11 @@ return {
               ["async-recursion"] = { "async_recursion" },
             },
           },
+	  diagnostics = {
+              experimental = {
+                  enable = false 
+              }
+          }
         },
       },
     },

@@ -3,6 +3,8 @@ return {
   event = "LazyFile",
   dependencies = {
     "mason.nvim",
+    "hrsh7th/nvim-cmp",
+    "hrsh7th/cmp-nvim-lsp",
     { "williamboman/mason-lspconfig.nvim", config = function() end },
   },
   ---@class PluginLspOpts
@@ -102,9 +104,9 @@ return {
 	 pyright = {
            enabled=true,
          },
-         lsp = {
-           enabled = true,
-         },
+         --lsp = {
+         --  enabled = true,
+         --},
          ruff_lsp = {
            enabled = ruff == "ruff_lsp",
          },
