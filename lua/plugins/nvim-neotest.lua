@@ -8,6 +8,9 @@ return {
       "nvim-treesitter/nvim-treesitter",
       --"rouge8/neotest-rust",
       "mrcjkb/rustaceanvim",
+
+      "nvim-lua/plenary.nvim",
+      "alfaix/neotest-gtest"
     },
     opts = {
       -- Can be a list of adapters like what neotest expects,
@@ -29,6 +32,8 @@ return {
           -- python = ".venv/bin/python",
           python = "/usr/bin/python3",
         },
+	["neotest-gtest"] = {
+	}
       },
       status = { virtual_text = true },
       output = { open_on_run = true },
