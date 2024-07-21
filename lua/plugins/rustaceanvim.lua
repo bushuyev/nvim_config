@@ -10,6 +10,11 @@ return {
           vim.cmd.RustLsp("codeAction")
         end, { desc = "Code Action", buffer = bufnr })
 
+       --vim.keymap.set("n", "<leader>mT", function()
+       --  vim.cmd.RustLsp("runnables", "--no-capture")
+       --end, { desc = "Rust Runnables", buffer = bufnr })
+
+
         vim.keymap.set("n", "<leader>dr", function()
           vim.cmd.RustLsp("debuggables")
         end, { desc = "Rust Debuggables", buffer = bufnr })
