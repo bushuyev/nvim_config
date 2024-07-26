@@ -22,5 +22,10 @@ return {
 --            require 'nordic' .load()
 --        end
 --     }
-  { "savq/melange-nvim" }
+--   { "savq/melange-nvim" }
+  {
+	  lazy = false,
+	  priority = 1000,
+	  "bushuyev/melange-nvim"
+  }
 }
