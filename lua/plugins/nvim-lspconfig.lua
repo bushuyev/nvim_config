@@ -63,7 +63,9 @@ return {
       -- `bufnr` and `filter` is handled by the LazyVim formatter,
       -- but can be also overridden when specified
       format = {
-        formatting_options = nil,
+        formatting_options = {
+		ColumnLimit = 20
+	},
         timeout_ms = nil,
       },
       -- LSP Server Settings
@@ -124,6 +126,12 @@ return {
          },
 	--end python
 	clangd = {
+	   cmd = {
+            "clangd",
+	    "--std=c++2b"
+            --"--fallback-style=LLVM",
+            --"--ExperimentalAutoDetectBinPacking=true",
+          },
 	}
       },
       -- you can do any additional lsp server setup here
@@ -146,7 +154,7 @@ return {
          end,
 	 rust_analyzer = function()
           return true
-        end,
+         end,
 	-- end python
       },
     }
