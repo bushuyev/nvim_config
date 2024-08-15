@@ -125,15 +125,24 @@ return {
            },
          },
 	--end python
-	clangd = {
-	   cmd = {
-            "clangd",
-	    "--std=c++2b"
-            --"--fallback-style=LLVM",
-            --"--ExperimentalAutoDetectBinPacking=true",
-          },
+	langd = {
+	  cmd = {
+           "clangd",
+	   --"--std=c++2b",
+	   --"--fexperimental-library"
+           --"--fallback-style=LLVM",
+           --"--ExperimentalAutoDetectBinPacking=true",
+         },
 	}
-      },
+	--cccls = {
+	--   cmd = {"ccls"},
+	--   init_options = {
+	--     cache = {
+      	--       directory = ".ccls-cache",
+    	--     };
+	--   },
+        -- },
+      }, 
       -- you can do any additional lsp server setup here
       -- return true if you don't want this server to be setup with lspconfig
       ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
