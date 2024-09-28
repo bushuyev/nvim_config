@@ -125,12 +125,13 @@ return {
            },
          },
 	--end python
-	langd = {
+	--https://github.com/clangd/clangd/issues/1850
+	clangd = {
 	  cmd = {
            "clangd",
-	   --"--std=c++2b",
+           -- "-std=c++23",
 	   --"--fexperimental-library"
-           --"--fallback-style=LLVM",
+           --"--fallback-style=Mozilla",
            --"--ExperimentalAutoDetectBinPacking=true",
          },
 	}

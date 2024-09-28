@@ -8,3 +8,4 @@ map("n", "<leader>mw", function() require("fzf-lua").lsp_workspace_symbols() end
 map("n", "<leader>md", function() require("fzf-lua").lsp_document_symbols() end, { desc = "Document Symbols" })
 map("n", "<leader>mc", function() require("fzf-lua").lsp_declarations() end, { desc = "Declarations" })
 map("n", "<leader>mt", function() require("fzf-lua").lsp_typedefs() end, { desc = "Type Definitions" })
+map("n", "<leader>me", function() vim.diagnostic.goto_next() end, { desc = "Next diagnostic" })
