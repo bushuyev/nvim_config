@@ -210,7 +210,7 @@ return {
     dependencies = {
       -- Ensure C/C++ debugger is installed
       "williamboman/mason.nvim",
-      optional = true,
+      optional = false,
       opts = { ensure_installed = { "codelldb" } },
     },
   -- stylua: ignore
