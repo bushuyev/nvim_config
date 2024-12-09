@@ -129,12 +129,12 @@ return {
 	clangd = {
 	  cmd = {
            "clangd",
-           -- "-std=c++23",
+           --"-std=c++23",
 	   --"--fexperimental-library"
            --"--fallback-style=Mozilla",
            --"--ExperimentalAutoDetectBinPacking=true",
          },
-	}
+	},
 	--cccls = {
 	--   cmd = {"ccls"},
 	--   init_options = {
@@ -143,6 +143,9 @@ return {
     	--     };
 	--   },
         -- },
+	-- https://github.com/LazyVim/LazyVim/discussions/3761
+	omnisharp = { enabled = false}, 
+
       }, 
       -- you can do any additional lsp server setup here
       -- return true if you don't want this server to be setup with lspconfig
@@ -197,14 +200,14 @@ return {
 
     if vim.fn.has("nvim-0.10") == 1 then
       -- inlay hints
-      if opts.inlay_hints.enabled then
+       if opts.inlay_hints.enabled then
         LazyVim.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
           if
             vim.api.nvim_buf_is_valid(buffer)
             and vim.bo[buffer].buftype == ""
             and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
           then
-            LazyVim.toggle.inlay_hints(buffer, true)
+            vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
           end
         end)
       end
