@@ -84,6 +84,8 @@ return {
      --  },
      --}
 
+       consumers = { overseer = require("neotest.consumers.overseer") },
+       strategies = { default = "overseer" },
 
     },
     config = function(_, opts)
@@ -207,6 +209,7 @@ return {
   {
     "mfussenegger/nvim-dap",
     optional = false,
+    config = function() end, -- 🔧 This line disables Lazy's default .setup() call
     dependencies = {
       -- Ensure C/C++ debugger is installed
       "williamboman/mason.nvim",
