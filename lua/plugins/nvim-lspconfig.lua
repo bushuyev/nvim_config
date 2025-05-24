@@ -3,13 +3,11 @@ return {
   event = "LazyFile",
   dependencies = {
     "mason.nvim",
-    "hrsh7th/nvim-cmp",
-    "hrsh7th/cmp-nvim-lsp",
     { "williamboman/mason-lspconfig.nvim", config = function() end },
   },
-  ---@class PluginLspOpts
   opts = function()
-    return {
+    ---@class PluginLspOpts
+    local ret = {
       -- options for vim.diagnostic.config()
       ---@type vim.diagnostic.Opts
       diagnostics = {
@@ -46,10 +44,6 @@ return {
       codelens = {
         enabled = false,
       },
-      -- Enable lsp cursor word highlighting
-      document_highlight = {
-        enabled = true,
-      },
       -- add any global capabilities here
       capabilities = {
         workspace = {
@@ -63,52 +57,48 @@ return {
       -- `bufnr` and `filter` is handled by the LazyVim formatter,
       -- but can be also overridden when specified
       format = {
-        formatting_options = {
-		ColumnLimit = 20
-	},
+        formatting_options = nil,
         timeout_ms = nil,
       },
       -- LSP Server Settings
       ---@type lspconfig.options
       servers = {
-       --lua_ls = {
-       --  -- mason = false, -- set to false if you don't want this server to be installed with mason
-       --  -- Use this to add any additional keymaps
-       --  -- for specific lsp servers
-       --  -- ---@type LazyKeysSpec[]
-       --  -- keys = {},
-       --  settings = {
-       --    Lua = {
-       --      workspace = {
-       --        checkThirdParty = false,
-       --      },
-       --      codeLens = {
-       --        enable = true,
-       --      },
-       --      completion = {
-       --        callSnippet = "Replace",
-       --      },
-       --      doc = {
-       --        privateName = { "^_" },
-       --      },
-       --      hint = {
-       --        enable = true,
-       --        setType = false,
-       --        paramType = true,
-       --        paramName = "Disable",
-       --        semicolon = "Disable",
-       --        arrayIndex = "Disable",
-       --      },
-       --    },
-       --  },
-       --},
-	--python
+        lua_ls = {
+          -- mason = false, -- set to false if you don't want this server to be installed with mason
+          -- Use this to add any additional keymaps
+          -- for specific lsp servers
+          -- ---@type LazyKeysSpec[]
+          -- keys = {},
+          settings = {
+            Lua = {
+              workspace = {
+                checkThirdParty = false,
+              },
+              codeLens = {
+                enable = true,
+              },
+              completion = {
+                callSnippet = "Replace",
+              },
+              doc = {
+                privateName = { "^_" },
+              },
+              hint = {
+                enable = true,
+                setType = false,
+                paramType = true,
+                paramName = "Disable",
+                semicolon = "Disable",
+                arrayIndex = "Disable",
+              },
+            },
+          },
+        },
+       	--python
 	 pyright = {
            enabled=true,
          },
-         --lsp = {
-         --  enabled = true,
-         --},
+
          ruff_lsp = {
            enabled = ruff == "ruff_lsp",
          },
@@ -127,26 +117,20 @@ return {
 	--end python
 	--https://github.com/clangd/clangd/issues/1850
 	clangd = {
+          filetypes = { "c", "cpp", "cuda", "cu" }, -- Enable clangd for CUDA files
 	  cmd = {
            "clangd",
+	   "--log=verbose",
            --"-std=c++23",
 	   --"--fexperimental-library"
            --"--fallback-style=Mozilla",
            --"--ExperimentalAutoDetectBinPacking=true",
          },
 	},
-	--cccls = {
-	--   cmd = {"ccls"},
-	--   init_options = {
-	--     cache = {
-      	--       directory = ".ccls-cache",
-    	--     };
-	--   },
-        -- },
-	-- https://github.com/LazyVim/LazyVim/discussions/3761
-	omnisharp = { enabled = false}, 
 
-      }, 
+
+
+      },
       -- you can do any additional lsp server setup here
       -- return true if you don't want this server to be setup with lspconfig
       ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
@@ -158,19 +142,9 @@ return {
         -- end,
         -- Specify * to use this function as a fallback for any server
         -- ["*"] = function(server, opts) end,
-	-- python
-	 ruff = function()
-           LazyVim.lsp.on_attach(function(client, _)
-             -- Disable hover in favor of Pyright
-             client.server_capabilities.hoverProvider = false
-           end, ruff)
-         end,
-	 rust_analyzer = function()
-          return true
-         end,
-	-- end python
       },
     }
+    return ret
   end,
   ---@param opts PluginLspOpts
   config = function(_, opts)
@@ -185,8 +159,6 @@ return {
     LazyVim.lsp.setup()
     LazyVim.lsp.on_dynamic_capability(require("lazyvim.plugins.lsp.keymaps").on_attach)
 
-    LazyVim.lsp.words.setup(opts.document_highlight)
-
     -- diagnostics signs
     if vim.fn.has("nvim-0.10.0") == 0 then
       if type(opts.diagnostics.signs) ~= "boolean" then
@@ -200,7 +172,7 @@ return {
 
     if vim.fn.has("nvim-0.10") == 1 then
       -- inlay hints
-       if opts.inlay_hints.enabled then
+      if opts.inlay_hints.enabled then
         LazyVim.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
           if
             vim.api.nvim_buf_is_valid(buffer)
@@ -240,11 +212,13 @@ return {
 
     local servers = opts.servers
     local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+    local has_blink, blink = pcall(require, "blink.cmp")
     local capabilities = vim.tbl_deep_extend(
       "force",
       {},
       vim.lsp.protocol.make_client_capabilities(),
       has_cmp and cmp_nvim_lsp.default_capabilities() or {},
+      has_blink and blink.get_lsp_capabilities() or {},
       opts.capabilities or {}
     )
 
@@ -252,6 +226,9 @@ return {
       local server_opts = vim.tbl_deep_extend("force", {
         capabilities = vim.deepcopy(capabilities),
       }, servers[server] or {})
+      if server_opts.enabled == false then
+        return
+      end
 
       if opts.setup[server] then
         if opts.setup[server](server, server_opts) then
@@ -268,9 +245,10 @@ return {
     -- get all the servers that are available through mason-lspconfig
     local have_mason, mlsp = pcall(require, "mason-lspconfig")
     local all_mslp_servers = {}
-    if have_mason then
-      all_mslp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
-    end
+    -- https://chatgpt.com/g/g-p-682b4f97dc488191b2f9bbe4de740a48-nvim/c/682b51d3-4cb0-8007-ab40-33e92dbd1669
+    --if have_mason then
+    --  all_mslp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
+    --end
 
     local ensure_installed = {} ---@type string[]
     for server, server_opts in pairs(servers) do
@@ -309,4 +287,4 @@ return {
       end)
     end
   end,
-} 
+}
