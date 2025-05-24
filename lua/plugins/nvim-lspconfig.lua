@@ -121,6 +121,11 @@ return {
 	  cmd = {
            "clangd",
 	   "--log=verbose",
+	   "--background-index",
+           "--compile-commands-dir=build",
+           "--all-scopes-completion",
+           "--completion-style=detailed",
+           "--header-insertion=never",
            --"-std=c++23",
 	   --"--fexperimental-library"
            --"--fallback-style=Mozilla",
