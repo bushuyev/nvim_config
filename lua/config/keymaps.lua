@@ -10,3 +10,12 @@ map("n", "<leader>mc", "<cmd>Telescope lsp_definitions<CR>", { desc = "Declarati
 map("n", "<leader>mt", "<cmd>Telescope lsp_type_definitions<CR>", { desc = "Type Definitions" })
 map("n", "<leader>me", function() vim.diagnostic.goto_next() end, { desc = "Next diagnostic" })
 map("n", "<leader>f", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
+
+-- map("n", "<leader>qs", function() require("resession").save() end, { desc = "Save Session" })
+map("n", "<leader>qv", function() require("resession").save(nil, { notify = true }) end, { desc = "Save Session" })
+map("n", "<leader>ql", function() require("resession").load() end, { desc = "Load Session" })
+map("n", "<leader>qd", function() require("resession").delete() end, { desc = "Delete Session" })
+
+local cr = require("custom.cursor_recorder")
+map("n", "<C-h>", cr.jump_back,    { desc = "Cursor history back" })
+map("n", "<C-l>", cr.jump_forward, { desc = "Cursor history forward" })

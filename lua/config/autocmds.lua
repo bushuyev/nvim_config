@@ -8,3 +8,17 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.b.autoformat = false
   end,
 })
+
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    require("resession").save("last", { notify = false })
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    if vim.fn.argc(-1) == 0 then
+      require("resession").load("last")
+    end
+  end,
+})
