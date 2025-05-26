@@ -1,20 +1,35 @@
 return {
   "stevearc/overseer.nvim",
   opts = {
-    -- extend the built-in alias that neotest uses for its tasks
     component_aliases = {
       default_neotest = {
-        -- ❶ our new dependency
-        { "dependencies", task_names = {
-            -- in-line one-off “shell” task
+        {
+          "dependencies",
+          task_names = {
             { "shell", cmd = "cmake --build build --parallel" },
-          } },
-        -- ❷ keep the rest of the default behaviour
+          },
+        },
         "default",
       },
     },
   },
-}
+  config = function(_, opts)
+    require("overseer").setup(opts)
 
--- enable the Overseer extra in LazyVim (once):
--- :LazyExtras editor.overseer
+    require("overseer").register_template({
+      name = "CMake Build",
+      builder = function()
+        return {
+          cmd = { "cmake" },
+          args = { "--build", "build", "--parallel" },
+          name = "CMake Build",
+          cwd = vim.fn.getcwd(),
+          components = { "default" },
+        }
+      end,
+      condition = {
+        filetype = { "cpp", "c", "cuda" },
+      },
+    })
+  end,
+}
